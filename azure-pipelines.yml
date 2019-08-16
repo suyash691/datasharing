@@ -1,0 +1,37 @@
+pool:
+  name: Default
+steps:
+- powershell: |
+   $foo = '<?xml version="1.0" encoding="UTF-8"?>
+      <TestRun id="6c5ca475-86d1-48d7-b0fa-8cfe3e37e0b6" name="testResults\testResults_2019-08-01T153300.338Z.xml" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+      <Times creation="2019-08-01T15:33:15+0000" start="2019-08-01T15:33:15+0000" finish="2019-08-01T15:33:15+0000"/>
+      <TestLists>
+        <TestList/>
+      </TestLists>
+      <TestDefinitions>
+        <UnitTest/>
+      </TestDefinitions>
+      <TestEntries>
+        <TestEntry/>
+      </TestEntries>
+      <Results>
+        <UnitTestResult/>
+      </Results>
+      <ResultSummary outcome="Completed">
+        <Counters total="0" executed="0" passed="0" failed="0"/>
+        <Output>
+          <StdOut/>
+        </Output>
+      </ResultSummary>
+      </TestRun>'
+   out-file -FilePath ".\testresults.xml" -InputObject $foo
+  displayName: 'PowerShell Script'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results **/testresults.xml'
+  inputs:
+    testResultsFormat: VSTest
+    testResultsFiles: '**/testresults.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: foo
